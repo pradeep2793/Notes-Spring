@@ -1,0 +1,27 @@
+	
+	
+	THERE ARE TWO WAYS TO INITIALISE OR INJECT DATA MEMBERS
+
+
+************************************SETTER INJECTION *************************************** 
+	    
+I) Create class and generate getter and setter for data members : 
+
+
+II) in xml file, create bean and using property tag set the value. Property tag will implicitly look for setter method in class and then set the values based on name : 
+ 
+	   <bean id = "heart"  class = "com.spring.practise.ConstructorSetterInjection.Heart">
+       		  <property name="bloodCount" value = "1500"></property>
+    	    </bean>
+
+************************************CONSTRUCTOR INJECTION *************************************** 
+
+I) Create class and generate field of data members using Constructor using fields 
+
+II)  in xml file, create bean and using constructor-arg tag set the value. Constructor-arg tag will implicitly look for Constructor method in 		class and then set the values based on name : 
+
+	    <bean id = "heart"  class = "com.spring.practise.Constructor_SetterInjection.Heart">
+       		 <constructor-arg name="bloodCount" value = "2500"></constructor-arg>
+            </bean>
+
+

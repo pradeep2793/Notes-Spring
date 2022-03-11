@@ -1,0 +1,32 @@
+	
+
+1. Definition :- While building rest API's, to provide the usage reference to end user, documentation is required on how to use it and implement it regarding urls, parameter and so on.
+	To ease this process, swagger is used through which documentation process is automated.  It enables documentation to be updated at the same pace as the server.
+	When properly defined via Swagger, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Thus Swagger removes the guesswork in calling the service.
+
+2. Thus, we will use springfox swagger 2.
+
+3. Create rest controller and few urls and check and verify in postman weather all urls are working.
+
+4. Now add following dependancy for swagger 2
+
+	<!-- It will create swagger document in json format -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+		<!-- It provide readable document format i.e., in html instead of json and allow to interact api's urls-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+5. Now goto core spring boot application java file, add annotation as : @EnableSwagger2
+
+6. Now annotate controller with some url as Ex : "@RequestMapping("/v2")", so that it will biforcate with root url in order to ensure all url to work properly..
+
+7. Now json documentaion url is : http://localhost:8080/v2/api-docs
+	Html response : http://localhost:8080/swagger-ui.html   (no need of using /v2 url)

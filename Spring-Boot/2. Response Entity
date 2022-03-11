@@ -1,0 +1,54 @@
+body
+header
+status
+
+I. Response Entity is used to send response from http request using below 3 important entity : 
+	a. body			b. header		c. status
+
+II. Mark return type as ResponseEntity and within method return ResponseEntity object.
+	
+	@GetMapping("/getEmp/{empId}")
+	public ResponseEntity<String> getEmp(@PathVariable("empId") int id)
+	{
+		String msg = "Hello........Hi";  // specify body
+
+		HttpHeaders head = new HttpHeaders(); // create header object
+
+		head.add("head", "This is header");  // specify header
+
+		return new ResponseEntity<String>( msg, head, HttpStatus.OK);  // create RE object and pass in constructor all 3 entities. 
+	}
+
+III. or we can return RE object using below line as well : 
+	
+	return ResponseEntity.status(HttpStatus.OK).headers(head).body("Custome body")
+
+IV. We can also save or receive data in postman as json using below example : 
+
+	@GetMapping("/getEmp/{empId}") // to fetch single record based on id
+
+	public ResponseEntity<Optional<Employee>> getEmp(@PathVariable("empId") int id)  // just add ResponseEntity ahead in return type
+	{
+		Optional<Employee> employee = repo.findById(id);
+		HttpHeaders head = new HttpHeaders();
+		head.add("head", "This is header");
+		return ResponseEntity.status(HttpStatus.OK).headers(head).body(employee);
+	}
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+We can also create our own class to display as api response. Let our class be ApiResponse.java havoing below fields : 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ApiResponse<T> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private boolean status;
+
+	private String code;
+
+	private String message;
+	
+//	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss",lenient = OptBoolean.FALSE, timezone = JsonFormat.DEFAULT_TIMEZONE)
+	private T data;

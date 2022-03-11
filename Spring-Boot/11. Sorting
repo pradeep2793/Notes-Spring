@@ -1,0 +1,29 @@
+
+********** Ensure repository interface extends with jparepository not with crudrepository****************	
+
+1. Create new method in service and modify existing findAll method of repository using Sort method as : 
+	public List<EmployeeEntity> findEmpWithSorting(String field)
+	{
+		return employeeEntityRepository.findAll(Sort.by(Sort.Direction.DESC, field));
+		
+	}
+
+	Sorting basically happen using field or property name of entity, thus above will sort in descending order.
+
+2. In controller : 
+	@GetMapping("/{field}")
+	public String getAddEmpFormPaging(@PathVariable("field") String field, Model model, ModelMap map) {
+
+		model.addAttribute("data", crudservice.findEmpWithSorting(field));
+		return "viewAllEmp";
+	}
+3. Jsp view : 
+	In viewEmployee, edit table header with hyperlink and give mapping as : field.
+		
+		<table class="table table-striped">
+  			<thead>
+  				  <tr>
+  					    <th><a href="/empId">EmpId</a><i class="fa fa-fw fa-sort"></i></th>
+				  </tr>
+			<thead>
+		</table>

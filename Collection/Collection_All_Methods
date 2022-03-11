@@ -1,0 +1,51 @@
+
+=> Consider 2 list in which we will apply all methods of Collection framework which will work on all List, Set, Queue and its implemented  	classes 
+		
+	List<Integer> list1 = new ArrayList<Integer>();
+		list1.add(10);
+		list1.add(5);
+		list1.add(30);
+		list1.add(4);
+		list1.add(15);
+		
+	List<Integer> list2 = new ArrayList<Integer>();
+		list2.add(20);
+		list2.add(55);
+		list2.add(30);
+		list2.add(4);
+		list2.add(155);
+
+1. boolean add(), int size(), void clear(), boolean empty()
+	Ex : list1.add(5); // element added to collection
+	     list1.size(); // return int value
+	     list1.clear(); // clear all collection objects 
+
+2. boolean remove(int arg0)- It will remove object from specific position : 
+	Ex : list1.remove(2);
+
+3. boolean removeAll(Collection arg0)
+	Ex : list1.removeAll(list1);
+
+4. boolean removeIf(Predicate) - It will remove object based on condition.
+	Ex : Predicate<Integer> predicate = i->(i%2==0); // it will filter all even numbers
+	     list.removeIf(predicate); // it will remove even number from list
+
+5. boolean retailAll() - It takes 2 collection and remove object from collection 1 which are not present in collection2
+	Ex : list1.retailAll(list2);
+
+6. boolean contains() - It return true if element present in list else false 
+	Ex : list.contains(20);
+
+7. Iterator : We know
+
+8. Object[] toArrays() : It will convert list into Object Arrays and then convert Object array to required type array : 
+	Ex : Integer[] arr = list.toArray(new Integer[6]);
+
+9. Stream<E> stream() - Used to convert list into stream.
+	Stream<Integer> stream = list.stream();
+
+10. boolean equals(Object element) - it matches two collections
+	Ex : list1.equals(list2);
+
+11. int hashCode() : Returns hashcode umber of collections.
+	Ex : list2.hashCode();

@@ -1,0 +1,52 @@
+Below is the code for generic utility conversion i.e., Dto to Entity & Entity to DTO.
+
+	public class DtoEntityConversion {
+
+	private static ModelMapper mapper = new ModelMapper();
+
+	private static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
+						.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+	
+
+	// for single object
+	public static Object conversion(Object request, Object response) {
+		response = mapper.map(request, response.getClass());
+		return response;
+	}
+
+	//for list of objects
+	public static <T> List<T> convertEntity(List<?> requestList, Class<T> clazz) {
+
+		List<T> responseList = new ArrayList<>();
+
+		for (Object request : requestList) {
+			
+			  Object convertValue = objectMapper.convertValue(request, clazz);
+		
+			  responseList.add((T) convertValue);
+		
+		}
+		return responseList;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+1. We can also use BeanUtils class from "org.springframework.beans" package and do the conversion directly without using any explicit custom class as : 
+
+	BeanUtils.copyProperties(requestDto, requestEntity);
+		or
+
+2. If we want to ommit certain attributes to not copy in target we can specify as : 
+
+	BeanUtils.copyProperties(requestDto, requestEntity, String ignoreProperties...);
+
+3. Conversion of List : 
+
+	List<Object> listOrigin (with data)
+    	List<Object> listDestination= new ArrayList<Object>(); 
+
+     	for (Object source: listOrigin ) {
+        	Object target= new Object();
+        	BeanUtils.copyProperties(source , target);
+        	listDestination.add(target);
+     	}
+
+create this custom generic method once in class and call it by specifying required custom objects

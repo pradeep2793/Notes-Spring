@@ -1,0 +1,20 @@
+Authentication entry point is basically to send the status code to user if authentication fail in calling api with given credential or token.
+
+1. 	@Component
+	public class CustomAuthEntryPoint implements AuthenticationEntryPoint{
+
+	@Override
+	public void commence(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException authException) throws IOException, ServletException {
+		
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Access denied");
+		}
+	}
+
+2. enable it in spring config file as : 
+
+	protected void configure(HttpSecurity http) throws Exception 
+	{
+		http
+		 .exceptionHandling().authenticationEntryPoint(entryPoint);
+	}

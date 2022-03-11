@@ -1,0 +1,33 @@
+
+I. No need of using @Component on java class and @ContextComponentScan(basePackages="") from configuration class, create configuration file as below : 
+
+	@Configuration
+	public class LivingThingConfig {
+	
+	@Bean
+	public Human getHuman()
+	{
+		 Human human1 =  new Human();
+		 return human1;
+	}
+	
+	@Bean
+	public Heart getHeart()
+	{
+		Heart heart = new Heart();
+		return  heart;
+	}
+}
+
+Note : Bean name can be overridden as well using name attribute as : @Bean(name="human")
+		or
+	@Bean(name = {"human","hum","man",.....})  // can be used with multiple names
+
+II) Above @Bean method, object will get created based on method_name as reference variable.
+	i.e., Human getHuman = new Human();
+
+III) In App.java, 
+
+       	 ApplicationContext ctx =  new AnnotationConfigApplicationContext(LivingThingConfig.class);
+
+	 Human human = ctx.getBean("getHuman",Human.class);

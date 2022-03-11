@@ -1,0 +1,27 @@
+
+I)******************USING @Autowired Annotation*********************************************************************************
+
+	i. 	in xml file use : <context:component scan base-package> (optional here, use only if using @component)
+
+	ii.	<context:annotation-config> (active annotation)
+
+	iii. Define bean seperately, 
+		<bean id = "heart2" class = "com.spring.practise.SpringAutoWire.Heart">
+			<property name="haemoglobin" value="2500"></property>
+		</bean>
+	
+		<bean id = "human" class = "com.spring.practise.SpringAutoWire.Human" ></bean>
+			(no need of specifying autowired="byType" if using @Autowired annotation)
+	
+	iv. in class, use @Autowired annotation and getter & setter for dependent object
+
+	v. That's it...!!
+
+	vi. @Autowired annotation resolved the object by following : 
+
+		a. byType
+		b. byName (if byType not match or multipe byType found then it resolved using byName)
+
+	Above example resolved object by using byType.
+
+

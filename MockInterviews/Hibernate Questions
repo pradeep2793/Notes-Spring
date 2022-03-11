@@ -1,0 +1,61 @@
+Q1. Difference between Hibernate and Jdbc (hibernate vs JDBC)
+    ---	Hibernate is ORM tool, direct map object to db wherein jdbc we need to write sql queris which is db dependent. 
+    ---	Switching of db is easy in hibernate as compared to jdbc as only need to change dialect.
+    --- Hibernate supports JPQL which is db independent query wherein in jdbc we need to write traditional sql queries.
+    --- Exception need to handled manually in jdbc whereas in Hibernate it takes care of all exception and infact convert checked into   	 unchecked exception.
+    --- Hibernate provide inbuilt transaction management support whereas in JDBC we need to managment transaction explicitly.
+
+Q2. Session VS Session factory (Differences)
+	SessionFactory is used to create session object. There can be multiple sessions but only one session factory object per db. session is 		valid only till the transaction wherein sessionfactory is available throughout the application.
+ 
+Q3. Can you create multiple session factory objects? Justify your answer!
+	If we are dealing with muliple db, then we need to create multipe session factory. Kindly note session factory must be one for single 		database.
+
+Q4. What is the equivalent object of the session in JPA?
+
+Q5. What is persistence context in JPA / Hibernate?
+	Its an JPA thing, whenever sessionFactory.opensession() method is called, a block is creatd in memory which is called persistence 		context which will be used to maintain and store state of objects. Whenever we open session, everything is managed by persistence 		context.
+
+Q6. Explain the first level of caching in Hibernate.
+	Whenever object is retrieved using identifier, in persistence context a copy or clone object is created along with orignal object 	 i.e., one reference will point to orignal object. So whatever we do modification in object and call save, it does in clone object not 		in orignal object, then if we do transation.commit(), it will check weather orignal object with same reference exist or not, if yes it 		will update that object else will create new object. This is known as First level caching.
+	Second level caching happen in Sessionfactory
+
+Q7. Justify the difference between get() and load() in Hibernate.
+    ---	Its an hibernate methods. 
+    --- Whenever get is called, it hits the db at the same time i.e., select query will execute at same time. It return null when no record is 		found for the given identifier. If we are not sure weather object exist or not will use get.
+    --- Whereas in load, it does not hit the db at same time, instead it will create proxy object and whenever some operation is perform on 		proxy object, it hit the db at that time. It comes under fetch type lazy. It return ObjectNotFoundException when no record is found 		for the given identifier. If we are sure that object exist we will use load.
+
+Q9. Different states in hibernate ? Explain the transient state & Persistent state in JPA/ Hibernate.
+    ---	Transcient, Persistent & detach are states in hibernate.
+    ---	Transcient state are state in which objects are not managed by session and/or persistent context. All java objects are transcient by 		default.
+    ---	As soon as we call session.save(s), then s object is managed by session and now it is in persistent state. Kindly note indentifier is 		mandatory to be in the object persistent state else persistent context will unable to manage such object as in database through 	identifier only everything is managed. save, saveOrUpdate,get,load---implies persistent states.
+
+Q10. What is a detached state in hibernate? 
+	Whenever object is released by our session object, it is in detach state. We can manually do this in 2 ways, 1st by calling 		session.close() and 2nd is calling session.evict();
+	
+Q11. How to detach an entity object from the persistence state without closing the session?
+	session.evict(), detach().
+
+Q12. Coding challenge on Hibernate states.
+
+Q13 - Why do we need a connection pool? (only basic is mentioned..)
+      -- Whenever we want to hit a database we need to create connection, we require id, pswd, authentication, dialect and so on and once 		 query is executed connection is closed. Thus every time when we query a data, a new connection is getting created. Thus, in order to 		 avoid this, connection pool comes into picture. It gets created in the server and server creates bunch of connection and whenever 		 user hit db, it talks to connection pool and then to db. It is there since user logs off.
+      -- Spring boot provide default connection pool i.e., Hikari CP.
+      -- DataSource manages the Connection Pool.
+
+Q14 - How will you implement connection pooling in your project?
+
+Q15- What are the fetch types available in hibernate? Explain how will you use it in real-time.
+     --- Eager & Lazy 
+	Eager : Whenever parent entity data is loaded, along with it, it will loaded the child entity data as well. All relationship except 		OneTomany & manyToMany is Eager by default. 
+	Lazy : Whenever parent entity data is loaded, it will not fetch the child entity data, instead it will retrieve on demand i.e., when 		getter method is called. By default OneTomany & ManyToMany fetch type is lazy in hibernate.
+
+Q16 - Eager Vs Lazy code practice
+ 
+Q17 - What is a @Generated value annotation? Explain the different generation types available in JPA / hibernate.
+	It is used for the primary key generation. There are 4 type of generated type of id : 
+	a. AUTO - Hibernate will responsible for the generation of primary key. It implicitly follow sequence generator pattern. If table 		   already exist and we are using AUTO, it will throw exception as unable to create sequence generator.
+	b. IDENTITY - In this, database is responsible for generator for id. If table already exist, it will use next sequence of the 	  	     current id.
+	c. SEQUENCE - It follows the sequence pattern of database sequence table column.	
+	d. Table : Its sequence get shared
+

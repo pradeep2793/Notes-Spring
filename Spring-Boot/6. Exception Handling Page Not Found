@@ -1,0 +1,20 @@
+
+1. Create one new controller handling exception only : 
+
+	@Controller("error")
+	public class ErrorController {
+	
+	@ExceptionHandler(Exception.class)
+	public ModelAndView errorHandler(HttpServletRequest req, Exception ex)
+	{
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("url", req.getRequestURL());
+		mv.addObject("error", ex.getStackTrace());
+		
+		mv.setViewName("error");
+		return mv;
+	}
+
+2. Above "ex.getStackTrace()" can be logged in loggers as well along with "req.getRequestURL()" so that support team will be able to find out exactly what has occurs.
+
+3. Create error.jsp and give constant message as "Some exception occured. Connect with support team..!!"

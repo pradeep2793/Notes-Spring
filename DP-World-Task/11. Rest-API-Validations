@@ -1,0 +1,32 @@
+1. Add below starter dependency :  
+
+	<dependency> 
+    		<groupId>org.springframework.boot</groupId> 
+    		<artifactId>spring-boot-starter-validation</artifactId> 
+	</dependency>	
+
+In DTO or Entity class, define various validation for sizze, characters and so on using annotation from javax.validation like below example : 
+	@Size(min = 3,message = "first name could not be less than 3 characters")
+	private String empFirstName;
+
+2. Define one controller to handle validation for api and send appropritae message along with status code as : 
+	
+	@ControllerAdvice
+	public class ValidationHandler extends ResponseEntityExceptionHandler{
+	
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getAllErrors().forEach((error) ->{
+			
+			String fieldName = ((FieldError) error).getField();
+			String message = error.getDefaultMessage();
+			errors.put(fieldName, message);
+		});
+		return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+3. Thats it, now in controller request handler, just use "@Valid" followed by request body.

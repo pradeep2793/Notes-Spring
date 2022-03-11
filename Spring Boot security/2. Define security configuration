@@ -1,0 +1,51 @@
+
+4. Now create SecurityConfiguration class, extends with WebSecurityConfigurerAdapter, annotate it with @Configuration and @EnableWebSecurity
+
+	@Bean
+	public UserDetailsService getUserDetailsService()  // class created in Step 3
+	{
+		return new UserDetailsServiceImpl();
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder getPasswordEncoder()  // save the password in encypted format in db instead of plain text
+	{
+		return new BCryptPasswordEncoder(10);  // encrypt of size 10
+	}
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() 
+	{
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(this.getUserDetailsService());
+		authenticationProvider.setPasswordEncoder(getPasswordEncoder());
+		return authenticationProvider;
+	}
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception 
+	{
+		auth.authenticationProvider(authenticationProvider());
+	}
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception 
+	{
+	 	// for custom login page
+		http
+		.authorizeRequests().antMatchers("/public/**").permitAll()
+		.anyRequest().authenticated()
+		.and().formLogin().loginPage("/public/login")   // provide my custom login page url
+		.failureUrl("/public/fail")// to give username/password error
+		.defaultSuccessUrl("/public/default")		     // home page to show after successfull login url
+		.and().csrf().disable();
+		// for default login page 
+		http
+			.authorizeRequests().antMatchers("/public/**").permitAll()
+			.anyRequest().authenticated()
+			.and()
+			  .formLogin()
+				.and().csrf().disable();
+		
+	}
+

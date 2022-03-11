@@ -1,0 +1,48 @@
+1. Suppose we Have Employee, Faculty, Payroll entity. Employee is parent having name & age whereas Faculty & Payroll are child which having additional field and we want all to store in parent entity only, then define entity classes as : 
+	
+	***Employee.java
+
+	@Entity
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor 
+	@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+	@DiscriminatorColumn(name = "staffType", discriminatorType = DiscriminatorType.STRING)  // staffType will define what type of objet
+	public class Employee {}
+
+	**Faculty.java
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Entity
+	@DiscriminatorValue(value = "faculty")
+	public class Faculty extends Employee {..}
+
+	**Payroll.java
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Entity
+	@DiscriminatorValue(value = "payroll")
+	public class Payroll extends Employee {..}
+
+2. Now create 3 Reposiotries interface as : 
+
+	@NoRepositoryBean
+	EmployeeRepository extends JpaRepository<>
+
+	@Repository
+	FacultyRepository extends EmployeeRepository
+
+	@Repository
+	PayrollRepository extends EmployeeRepository
+
+3. Now create rest endpoints to store data for Faculty and Payroll, in table it will persist as : 
+
+	staffType| EmpId|......field of payroll & faculty..
+
+	staffType will have for reference as it will show what typew of object it have in particular row..example Faculty or Payroll.
+
+4. Also we can create Join table as well wherein Faculty and Payroll table wil have emp id as foreign key, To achieve this, just use InheritanceType=Joined in step 1. Thats it.

@@ -1,0 +1,38 @@
+XML Based autowired : 
+
+I) First create class, use getter & setter method or constructor using field for data members, create configuration xml file under 		src/main/java folder.
+
+II) *****************using autowire = "byName/byType/Constructor in XML**************************************************************
+
+	class Human
+	{
+
+		private Heart heart;
+
+	}
+
+	i. Dont use @Autowired annotation in class.
+
+	ii. In config xml, first create all beans and then in dependent bean write autowire = "byName/byType/byConstructor"
+		Ex : 	<bean id = "heart" class = "com.spring.practise.SpringAutoWire.Heart"></bean>
+
+			<bean id = "human" class = "com.spring.practise.SpringAutoWire.Human" autowire="byName"></bean> 
+			(Human class have dependancy of Heart class.)
+
+	iii. If data members are there, define it inside heart bean using property tag.
+
+	iv. Create object of Human using context in App.java and call Human method in which heart method is called using heart reference.
+
+---------------------------------------------------------------------------------------------------------------------------
+	But if the application is big and 100+ beans are there, then its become difficult to debug the application as above config does not 	provide concrete implementation of which object is been used by which object.
+
+	Thus convinient way is to define bean and its dependancy using property and ref tag as below : 
+
+	<bean id = "heart2" class = "com.spring.practise.SpringAutoWire.Heart">
+		<property name="haemoglobin" value="2500"></property>
+	</bean>
+	
+	<bean id = "human" class = "com.spring.practise.SpringAutoWire.Human" >
+		<property name="heart" ref = "heart2"></property>
+	</bean>
+

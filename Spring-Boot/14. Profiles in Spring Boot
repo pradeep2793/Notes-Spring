@@ -1,0 +1,29 @@
+
+1. Spring Profiles provide a way to segregate parts of your application configuration and make it only available in certain environments like dev, prod, stag, qa..
+
+2. Example : If we want swagger to do the documentation process for dev only and not for qa or prod, then we can configure the same using profiles.
+
+3. Also if we want to use h2 db for stag, mysql for dev at that time also we can do such things in profile.
+
+4. Steps to create, configure and use profile are : 
+	
+	i.  create restcontroller and fetch value from properties file in string using @Value annotation as : 
+
+		@Value("${spring.message}")
+		String str;
+
+		@GetMapping("/index")
+		public String hello()
+		{
+			return str;
+		}
+
+	ii. Now create one more properties file with naming convention as : "application-dev.properties". Thus name of this profile is dev.
+		Within this profile add line as -> spring.message = This is prod  properties file...
+
+5. Now to use this profile, active this profile from application.properties file as : 
+	spring.profiles.active = dev
+
+6. Thus this profile will get activated and data will be load as per requirement.
+
+7. By default, default profile i.e., application.properties is active all the time. Thus generic configuration is been done on this file and all environmental specific configuration is been done on profiles file.

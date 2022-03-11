@@ -1,0 +1,9 @@
+
+1. create new properties within resource folder simultaneously with "application.properties" file.
+
+2. Add content in key value pairs.
+
+3. Now wherever in java class, its value is required, first annotate class with "@PropertySource({"classpath:config.properties"})"
+	For more than 1 file : @PropertySource({"classpath:config.properties", "classpath: db.properties"})
+
+4. Now fetch value with @Value.

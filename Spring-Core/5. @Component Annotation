@@ -1,0 +1,23 @@
+
+I) In XML file, dont need to create bean. just scan the package using below syntax : 
+	 <context:component-scan base-package="com.spring"></context:component-scan>
+
+II) In java class, annotate class using @Component and its dependancy using @Autowired.
+					|			|
+	** Human Class			|** Heart class		| ** XML
+					|			|
+	@Component			|@Component		| <context:component-scan base-package="com.spring"></context:component-scan>
+	class Human			|class Heart		|
+	{				|{}			|
+		@Autowired		|			|
+		Heart heart;		|			|
+					|			|
+	//getter & setter for heart	|			|
+					|			|
+	}				|			|
+
+III) We can also specify the reference for our object using component as : 
+	@Component("humanHeart")
+	class Human{}
+
+	It will create object as : Human humanHeart = new Human(); 

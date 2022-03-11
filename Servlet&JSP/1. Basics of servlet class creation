@@ -1,0 +1,61 @@
+
+************************************CREATE PROJECT**************************************
+
+1. create dynamic web project, while setting up select server runtime livrary, tick checkbox create deployment descriptor->finish
+
+2. create index.jsp and then run.
+
+3. Create class, extends it with HttpServlet to make it a servlet class.
+
+4. Servlet class life cycle provide 3 methods : 
+	a. init (creation of servlet class)
+	b. service (business logic)
+	c. destroy
+
+5. init and destroy are happen automatically by the tomcat, we need to use service method to write business logic as : 
+
+	
+	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
+		int num1 =  Integer.parseInt(req.getParameter("num1"));
+		int num2 =  Integer.parseInt(req.getParameter("num2"));
+		
+		int sum = num1+num2;
+		
+		PrintWriter writer = res.getWriter();  // to write on browser, we require printwriter object
+		writer.print(sum);
+	}
+
+	We can also use doGet OR doPost method instead of service method
+
+6. In web.xml, do the mapping of servlet using <servlet-name> & <servlet-class>
+
+************************************To call 2nd servlet from 1st servlet **************************************
+
+1. Using RequestDispatcher : 
+
+	req.setAttribute("sum", sum);
+	RequestDispatcher rd = req.getRequestDispatcher("sq");  // create mapping in xml using sq name.
+	rd.forward(req, res);
+
+	Create servlet class and fetch data as : 
+
+		int sq = (int)req.getAttribute("sum");
+		// rest of the lines
+
+2. Using sendRedirect : 
+	sending data from as url : 
+		res.sendRedirect("sq?sum="+sum);
+	Sq servlet class : 
+		int sq = Integer.parseInt(req.getParameter("sum"));
+		// rest of the code
+
+3. Using session : 
+	HttpSession session = req.getSession();
+	session.setAttribute("sum", sum);
+	res.sendRedirect("sq"); // send request to sq servlet
+
+	Sq servlet : 
+		HttpSession session = req.getSession();
+		int sum = (int)session.getAttribute("sum");
+		// rest of the statements

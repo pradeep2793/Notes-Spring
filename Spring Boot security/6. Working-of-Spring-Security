@@ -1,0 +1,36 @@
+			
+			Request with un & pwd
+				|
+				|
+			Filter(CustomFilter or DelegatingFilterProxy)
+				(convert request to Authentication obect i.e., Principal)
+				|
+				|
+			AuthenticationManager 
+				(take help of Providermanager to call -------> Provider Manager(have many but will call one)
+				supported AuthenticationProvider)		|		|		|		|
+										|		|		|		|
+										|		|		|		|
+									AuthenticationProvider1 AuthenticationProvider2 ....
+													|
+													|
+												UserDetailsService
+												(call authenticate method to validate & return 														valid authentication object)
+
+1. Request comes to filter(CustomFilter or DelegatingFilterProxy) first with un & pswd.
+
+2. Filter will create Authentication object of request using convert method and delegate this object to AuthenticationManager.
+
+3. Authenticationmanager is interface which itself take help of Providermanager.
+
+4. ProviderManager with support method call the appropriate AuthenticationProvider(OAuth2, DaoAuthentication and so on). We can also define our custom AuthenticationProvider implements AuthenticationProvider.
+
+5. AuthenticationProvider will call UserDetailsService which will retrieve data from external sources and then AuthenticationProvider will invoke authenticate method to verify authentication object data with userdetailservice data.
+
+6. If success, will return valid authentication object(Ex. usernamepasswordauthenticationtoken) to AuthenticationManager and then to Filter.
+
+7. Filter will set authentication object to security context using SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken). Basic purpose of setting object in security context is when user try to access other page, it will check in security context weather authentication object is available or not. If yest, will process request. If no, redirect to login page.
+
+8. POost this request goes to servlet.
+													
+

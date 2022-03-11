@@ -1,0 +1,75 @@
+
+i. JVM is basically divided into 3 parts : 
+	1. ClassLoader,
+	2. Memory Areas,
+	3. Execution Engine.	
+
+	
+ii.			Java Code (ABC.java) // JDK
+				|
+				|
+			        |
+			    Compiler(javac) // JDK
+				|
+				|
+			        |
+		   Java class file (ABC.class) //JVM within JRE
+				|
+				|
+			        |
+		  Class Loader Subsytem (java ABC) // takes .class file as input
+				|
+				|
+			        |
+		Memory allocation happens (Method area, Heap, Stack, PC registers, Native Method)	
+				|
+				|
+			        |
+		Execution Engine (consist of Interpreter & JIT)
+
+iii. Class Loader Subsytems :  
+	a. It is first entry point where java file is been received in bytecode format.
+	b. It is divided into 3 components i.e., Loading, Linking & Initialisation.
+
+		Loading					Linking						Initialiser
+		   |					   |						     |
+		   |					   |						     |
+	BootStrap CLassLoader (high priority)		 Verify						Initialisation
+		   |					   |
+	Extension ClassLoader (mid priority)		 Prepare
+		   |					   |
+	Application ClassLoader (low priority).		Resolve
+		  
+	
+	Loading : 
+		Loading is responsible for memory allocation of .class file within memory areas. 
+
+		Loading is divided into 3 more subcomponents : 
+
+ 			aa. Bootstrap ClassLoader		bb. Extension ClassLoader		cc. Application ClassLoader
+
+		 Bootsrap ClassLoader : 
+			It is responsible to load classes from bootstrap classpath.
+			Bootstrap classpath are nothing but rt.jar file.
+			All core java API classes(Scanner, ArrayList etc) loading are basically done by Bootsrap ClassLoader.
+			It gets hihest priority.
+		 Extension ClassLoader : 
+			Classes present inside ext,jdk,jre etc. are been loaded by Extension ClassLoader.
+			Child of Bootstrap classloader.
+			If bootstrap unable to load, then it comes into picture.
+		 Application ClassLoader : 
+			It is responsible to load classes from application classpath like environmental variables.
+
+
+	Linking : 
+		Verify : 
+			It check weather bytecode is generated using valid compiler or not. It contains any virus.
+			It make java a secure language.
+		Prepare : 
+			It is responsible for allocating memory to respective slot for all class variables i.e., static variable.
+			Also it initialise default value of static variable.
+		Resolve :
+			All symbolic references are replaced with orignal references from method area.
+	
+	Initialisation : 
+			It is responsible for replacing  default value to static variable into orignal one.

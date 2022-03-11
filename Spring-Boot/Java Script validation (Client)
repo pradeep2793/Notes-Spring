@@ -1,0 +1,96 @@
+1. Refer static file for js inclusion in jsp. Ex : validate.js
+
+2. Now add id as <form id = "regForm">
+
+3. Now in validate.js file : 
+
+	$(function() {
+	var $employeeForm = $("#regForm");
+	jQuery.validator.addMethod("lettersonly", function(value, element) {
+		return this.optional(element) || /^[a-z\s]+$/i.test(value);
+	}, "Only alphabetical characters");
+	
+	
+
+
+		$employeeForm.validate({
+			rules: {
+					fname: {
+					required: true,
+					maxlength: 15,
+					minlength: 4,
+					lettersonly: true
+				},
+				
+				lname: {
+					required: true,
+					maxlength: 15,
+					minlength: 4,
+					lettersonly: true
+				},
+				
+				
+				email: {
+					required: true,
+					email: true
+				},
+				
+				mobile: {
+					required: true,
+					minlength:10,
+					maxlength:10
+				},
+
+				salary: {
+					required: true,
+					digits: true
+				}
+				
+			},
+
+			messages: {
+					fname: {
+					required: 'First name cannot be empty!',
+					minlength: 'Minimum permitted character is 4',
+					maxlength: 'Maximum permitted characters is 15',
+					lettersonly: 'firstname must contain only aplha character'
+
+				},
+
+				lname: {
+					required: 'Last name cannot be emptyy!',
+					minlength: 'Minimum permitted characters is 4',
+					maxlength: 'Maximum permitted characters is 15',
+					lettersonly: 'lastname must contain only aplha character'
+				},
+				
+
+				email: {
+					required: 'Email cannot be emptyy!'
+				},
+				
+				mobile: {
+					required: 'mobile cannot be emptyy!',
+					minlength: '10 digit required',
+					maxlength: '10 digit required'
+					
+				},
+				
+				salary:{
+				required : 'Please input salary',
+				digits : 'No characters allowed, only numeric'
+				}
+
+			},
+			
+			
+		
+		})
+		
+})
+
+
+
+
+
+

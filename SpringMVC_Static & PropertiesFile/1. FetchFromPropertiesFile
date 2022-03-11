@@ -1,0 +1,28 @@
+
+I) First create folder as "resources" in src/main. Within resources folder, create new file as "config.properties".
+
+II) in xml configuration file, declare bean as : 
+
+	 <bean id="configProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+ 		 <property name="location" value="classpath:config.properties" />
+ 	 </bean>
+
+For multiple properties file, just declare above bean with different bean id and mention path with value tag.
+
+	Ex :  <bean id="dbProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+ 		 <property name="location" value="classpath:db.properties" />
+ 	    </bean>
+
+III) Now in properties files, add data in key & value pairs and fetch data in java class or xml file using keys.
+
+IV)
+*************************** TO FETCH IN XML EX. DB CONFIGURATION OR SPRING VERSION OR SO ON ************************************
+
+	i. <property name="port" value="${port}" (port = key defined in properties file).
+		|||ly, can be use to set data members values of classes as well.
+
+************************************ TO FETCH IN JAVA CLASSES *****************************************************************
+	ii. to fetch in java class : 
+		@Value("${host}")
+		private String host;
+		(host value will set in host reference of string type and can be used further).

@@ -1,0 +1,71 @@
+Since, if we want to customize that documentation must be done for slected urls, then we need to configure swagger using Docket object.
+
+Like earlier, swagger was used to create documentation for all the apis it found in project, so in order to customise it for selecetd url's, we will create one java configuration class and return docket object in which configuration will  be done. Lets start :- 
+
+
+1. Add following dependancy :  
+
+<!-- It will create swagger document in json format -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+		<!-- It provide readable document format i.e., in html instead of json and allow to interact api's urls-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+2. create java configuration file and add annotation @EnableSwagger2 
+
+	@Configuration
+	@EnableSwagger2
+	public class SwaggerConfiguration {
+
+	@Bean
+	public Docket getDocket() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.select().
+				paths(PathSelectors.ant("/v2/"))  // document all apis with urls v2/**
+				.apis(RequestHandlerSelectors
+				.basePackage("com.swagger"))  // base package of api
+				.build();
+
+3. Now check in html using url : http://localhost:8080/swagger-ui.html
+
+4. In order to provide custom reference using our own text in documented api, goto controller and with handler api method annotae with @apioperations as : 
+
+	@PostMapping("/")
+	@ApiOperation(value = "Pass object of student entity in json format and hit send...!!")
+	public void saveStudent(@RequestBody StudentEntity student)
+	{
+		swaggerService.insertStudent(student);
+	}
+
+	// Thus, in html it will print as text within this url.
+
+5. To modify or give custom header name for document in html doc, return apiInfo object and within its constructor set all its value with all details as : 
+	
+		private ApiInfo apiInfo() 
+		{
+			return new ApiInfoBuilder().title("Student API")
+				.description("Student API reference for developers")
+				.termsOfServiceUrl("pdp.mishra34@gmail.com")
+				.license("Pradeep License")
+				.licenseUrl("pdp.mishra34@gmail.com").version("1.0").build();
+		}
+
+6. Now call this method just after build method in Docket object bean method as : 
+	
+	{
+		.......
+		.build()
+		.apiInfo(apiInfo());
+	}
+
+7. Also we can specify propery description of entity class using "@ApiModel(description = "Details about student from API Model")" &
+	with property use annotation as : 
+		@ApiModelProperty(notes = "Unique id of student")

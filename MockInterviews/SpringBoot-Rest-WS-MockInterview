@@ -1,0 +1,106 @@
+Q1. @component vs @service vs @repository
+	All are used to create object based on annotation wherein service is there for better readability so that in future by identfing service one can figure out here will 	  be a business logic, same with reposiotry which is there for database and transaction related stuffs.
+
+Q2. What will happen if you will use @service over a DAO?
+	It will wor fine wwwithot any issue but reposiotry have better db related exception handling mechanism compare to service.
+Q3.Explain spring Bean Lifecycle
+	2 annotation are used--PostConstruct & PreDestroy. Preconstruct method gets executed before object is created whenever container is 		created before bean instatiation.
+	PreDestroy will get call before container getting destroyed.
+	In standalone application, we do not use context.close() instead we use below method so that pre destroy method gets called : 
+		context.registerShutdownHook()
+	In standalone application, we create container manually using ApplicationContext whereas in web application, DispatcherServlet does 		the job for us and once we stop the server, container gets destroyed.
+
+Q4.how you will call the @Predestory marked methods in the standalone application.
+	context.registerShutdownHook()
+
+Q5.Explain the helper class that initializes and destroys the web application context.
+	Class is ContextLoaderListener have 2 methods i.e., contextInitialized & contextDestroyed
+Q6. What are the RestClients you have used in your project?
+	Feign Client
+
+Q7.getForEntity() vs postForEntity()
+	its an RestTemplate client.
+
+Q8. What are the uses of ResponseEntity?
+	Just to send customized status code, header, body.
+
+09. What should be the delete API method status code?
+	can be 202 or 404.
+
+Q10. Why should you handle response timeout while calling any API?
+	everytime user send request to server a thread is created which is use to establish connection to server. If multiple users send 		request, for every user/request 	thread is created and if server is not up resources are wasted and will impact performance. Thus to 		release threads, we must have a timeout.
+
+Q11. Explain the differences between Server timeout and Read timeout.
+	sERVER tIMEOUT - uNABLE TO Establish connection to server.
+	Read Timeoout - connection established but unable to read data from server.
+
+Q12.  What is versioning in Rest? what are the ways that you can use to implement versioning? 
+Q13. How does Basic Authentication work in Rest API? 
+	Refer working of spring security file under notes folder.
+
+Q14.  Should you use JWT or Session-based authentication in the microservices environment?
+	JWT becuase it is stateless and rest api's must be stateless which means server will not hold any information or state about client.
+	In microservices environment, we scale our application and if we do with session it will specific for particular server not for other 		server. 
+	We write Vearer in header because it implies we are the owner of this token.
+	JWT is authorization not authentication bcause after authentication only token is generated.
+
+Q15. What is content negotiation?
+	content negotiation means what kind of content our api need to accepts(xml or json) and what kind of content response our api mus 		produce(xml or json).
+	We define it with method signature using consume, produce, Mediatype signature as below : 
+
+	Ex : 
+
+	@GetMapping("/course", consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+				produces = {MediaType.APPLICATION_JSON_VALUE})
+	public Course course()
+	{
+		return new Course("Java tutorial..!!");
+	}
+
+Q16. What are the cross-cutting concerns in spring? how do you implement it in microservices architecture?
+	It is related to Spring AOP.
+
+Q17. How to create custom validators in spring?
+
+Q18.core java interview questions and answers for experienced
+Q19. How hashmap works internally?
+	done..refer notes
+
+Q20. List vs Set
+	duplicates, insertion order, 
+
+Q21. java interview questions coding
+Q22. ArrayList Internal coding hands-on questions 
+Q23. Collection coding interview questions java
+Q24. defining the constructor capacity in Arraylist increases performance?
+Q25. How Arraylist works internally?
+Q26. Difference between fail fast/fail safe collections 
+	Fail Fast : The Fail Fast iterators immediately throw ConcurrentModificationException in case of structural modification of the collection. Structural 					modification means adding, removing, updating the value of an element in a data collection while 			   another thread is iterating over that collection.
+	The Fail Fast iterator throws a ConcurrentModificationException if a collection is modified while iterating over it.
+	The Fail Fast iterator uses an original collection to traverse over the collection's elements.
+	They are memory savers, don't require extra memory.
+	The Fail Fast iterators returned by ArrayList, HashMap, Vector classes.
+
+	Fail Safe : The Fail Safe iterators are just opposite to Fail Fast iterators; unlike them, A fail-safe iterator does not throw any exceptions unless it can 	handle 		if the collection is modified during the iteration process. This can be done because they operate on the copy of the collection object instead of the original object. 		The structural changes performed on 			the original collection ignored by them and affect the copied collection, not the original collection. So, the 			original 	collection will be kept structurally unchanged.
+
+		We can perform the modification operations on a collection while iterating over it.
+	They will not throw ConcurrentModificationException during the iteration.
+	The Fail Safe iterators use a copy of the collection to traverse over the elements.
+	Unlike the Fail Fast, they require more memory as they cloned the collection.
+	The examples of Fail Safe iterators are ConcurrentHashMap, CopyOnWriteArrayList, etc.
+
+Q27. Which types of collections consume more memory; fail-fast or fail-safe?
+	fail safe
+
+Q28. core java coding questions in collection iterator.
+Q29. Can you modify the collection return by Arrays.asList()?
+Q30. Questions on ConcurrentModificationException and CopyOnWriteArrayList.
+Q31. Explain the Signleton design pattern. How spring's singleton scope is different then GOF signleton?
+	In java, allow only one object must be created and in spring one object per container. We can make class singleton by defining 3 things as below : 
+	i. Private onstructor
+	ii. private Static object creation within same class
+	iii. public static method to return above static object.
+	
+NoOpPasswordEncoder is singleton class in spring security.
+
+Q32. Give me a code walkthrough on the spring security internal workflow

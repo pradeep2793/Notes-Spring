@@ -1,0 +1,42 @@
+
+1. If we want to use model key across multiple request or need to use in multiple pages, then instead of using 	  	"model.addAtrributes(key,value)" acorss all handlers, we will make use of session and use it in multiple request and handlers method.
+
+2. Ex : 
+	i. Annotate controller class with @SessionAttributes("name"), name = key.
+	
+	ii. @RequestMapping(value = "/verify-login", method = RequestMethod.POST)
+		public String showSuccess(ModelMap model,@RequestParam("name") String name, @RequestParam("password") String password)
+		{
+			boolean b = udemyService.checkLogin(name, password);
+			
+			model.addAtrribute("name", name);
+			return "success";
+		}
+	
+	iii. Thus, above model name field can be use in any other handler method as well to display it in n number of web pages as : 
+		String name = (String)model.get("name");
+
+	iii. If need to use name key on another controller class, annotae that class with @SessionAttributes("name"), and then follow step 3.
+
+************************************** SESSION DURING LOG IN AND LOG OUT ************************************************************
+
+1. In controller class, create session as global variable to use in multiple handler's as : 
+	HttpSession session = null;
+
+2. In login post controller,
+	session = request.getSession();
+	session.setAttribute("name", name);
+
+3. Now in all the handler's, where we need to ensure that login is mandatory to view this page or access this url,
+	session = req.getSession();
+	String name = (String) session.getAttribute("name");
+	if(name==null)
+	{
+		model.addAttribute("error", "Login first to view this page");
+		return "showLogin";
+	}
+
+4. Log out : Within logout handler, use invalidate method of session as : 
+	session = request.getSession();
+	session.invalidate();
+	

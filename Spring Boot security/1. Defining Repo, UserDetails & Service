@@ -1,0 +1,48 @@
+ 
+ Steps to implement Spring security in spring bootweb application project with db log in and log out..
+
+1. First, in repository class, create one abstract method in which we will be returning entire model object using email field as : 
+	
+	@Query("select a from AdminModel a where a.email = :email")
+	public AdminModel getAdminByEmail(@Param("email") String email);
+
+
+2. Now create UserDetailsImpl class implemnting UserDetails interface and override all its method : 
+	
+	i.   Define our entity model class as : AdminModel admin; (no need to autowire)
+	ii.  Generate constructor using field and keep this admin value in parameter.
+	iii. Now in username & password overrided method, return username & paswword using admin object as admin.getPassword();
+	Ex : 
+		public class UserDetailsImpl implements UserDetails {
+			private AdminModel admin;
+			public UserDetailsImpl(AdminModel admin) {  // define entity in which username & password need to be verified
+			super();
+			this.admin = admin;
+			}
+	
+		@Override
+		public String getPassword() {
+		return admin.getPassword();
+		}
+
+		@Override
+		public String getUsername() {
+		return admin.getEmail();
+		}
+
+		....rest of the method set all true
+
+3. Now create UserDetailsServiceImpl class implementing UserDetailsService, autowired adminrepository class and override "loadUserByUsername" 	 method as : 
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		AdminModel admin = adminRepository.getAdminByEmail(username); // getAdminByEmail defined in repository class
+		
+		if(admin==null)
+			throw new UsernameNotFoundException("No such email exist..!!");
+		
+		UserDetailsImpl userDetailsImpl = new UserDetailsImpl(admin);
+		return userDetailsImpl;
+		
+	} 

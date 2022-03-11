@@ -1,0 +1,48 @@
+
+1. Junit is used to test our piece of code weather method is executing as expected or not.
+
+2. We need to use 2 things : Junit annotations & assert. Junit test is itself is a class in which testing is carried out.
+
+3. Create maven project and add dependency for junit as, Kindly check maven dependencies, if junit jar is not there then add dependency as below : : 
+	<dependency>
+    		<groupId>org.junit.jupiter</groupId>
+    		<artifactId>junit-jupiter-engine</artifactId>
+    		<version>5.7.0</version>
+    		<scope>test</scope>
+	</dependency>
+
+Also ensure junit is added in class path i.e., Right click(Project)-> Configure build path->Libraries->Add Library->Junit-.Apply.
+
+
+4. We will already get "src/test/java" where all junit test classes will be created.
+
+Naming convention is important, prefix all test method with "test*" and class with "Test*".
+
+5. Annotations : 
+	@BeforEach(method annotated with this will execute before every test methods. Can be used for connection establishment, object creation and so on),
+	@AfterEach(will execute after every test method's. Can be used for clean up activity)
+	@Test  // method in which testing is carried out
+	@DisplayName // it will print custom name of method in junit console to increase readability
+	@AfterAll // will execute after all test method execution
+	@BeforeAll // will execute before all test method once
+	@Disabled
+	@TestMethodOrder
+	@RepeatedTest
+
+6.Assertions : 
+	It is used to test actual method value with expected value as : 
+	Ex : @Test
+	public void test_cube() 
+	{
+		int cube = myMath.cube(3);  // myMatch instance of MyMath.java whose method need to be tested
+		  
+	 	Assertions.assertEquals(27, cube); // will throw error if both are not equal
+			or
+		Assertions.assertEquals(27, cube,"Data not matching"); // if want to give custom messages
+		
+	}
+
+
+i. assertEquals()
+ii. assertNotNull
+

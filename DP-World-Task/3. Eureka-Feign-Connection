@@ -1,0 +1,9 @@
+1. Follow all the steps of registering aureka server & client.
+
+2. Once its done, now in client application in interface where we are accessing other service url using annoation @FeignClient, just write name in it and remove url parameter.
+	Ex : 
+	@FeignClient(name = "Delivery")  // Delivery = application name of service whose url we want to use
+	public interface OrderPayment {
+	
+	@GetMapping("/getDelivery/get")
+	public String deliveryRequest();

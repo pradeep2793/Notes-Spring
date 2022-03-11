@@ -1,0 +1,47 @@
+1. Create one class extends it with AuthenticationProvider as below : 
+
+	@Component
+	public class CustomAuthProvider implements AuthenticationProvider {
+
+	@Autowired
+	private UserDetailsServiceImpl userDetailsService;
+
+	@Autowired
+	private BCryptPasswordEncoder getPasswordEncoder;
+
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		String username = authentication.getName();
+		String password = String.valueOf(authentication.getCredentials());
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+		if (getPasswordEncoder.matches(password, userDetails.getPassword())) {
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
+					password, userDetails.getAuthorities());
+			return authenticationToken;
+		}
+		throw new BadCredentialsException("Error!!");
+	}
+
+	@Override
+	public boolean supports(Class<?> authentication) {
+		// TODO Auto-generated method stub
+		return true;
+		}
+	}
+
+2. Now in security config file, override these two method as below : 
+
+	@Bean
+	public CustomAuthProvider authenticationProvider() 
+	{
+		return new CustomAuthProvider();
+	}
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception 
+	{
+		auth.authenticationProvider(authenticationProvider());
+	}
+

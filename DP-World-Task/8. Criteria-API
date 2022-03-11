@@ -1,0 +1,39 @@
+1. Suppose we want to fetch record of specific salary from db, then we will create one interface in which we will have one abstract method 	as : 
+		@Repository
+		public interface EmployeeRepositoryCustom {
+		public List<Employee> getSalary(int salary);
+		}
+
+2. Now define implementation of the above interface as : 
+	
+	@Repository
+	public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom {
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	@Override
+	public List<Employee> jfhfhf(int salary) {
+		
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		
+		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+		
+		Root<Employee> employee = criteriaQuery.from(Employee.class);
+		
+		Predicate salaryPredicate = criteriaBuilder.equal(employee.get("salary"), salary);
+		
+		criteriaQuery.where(salaryPredicate);
+		criteriaQuery.select(employee);
+		
+		TypedQuery<Employee> typedQuery = entityManager.createQuery(criteriaQuery);	
+		
+		return typedQuery.getResultList();
+		}
+	}
+
+3. Now in main repository, extends step 1 interface and then use these methods.
+
+4. Naming convention is important, kindly ensure name of step 1 interface is same as main repository interface followed by custom, also implemented interface name is same as main interface repository followed by Impl.
+
+	

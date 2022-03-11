@@ -1,0 +1,43 @@
+
+1. When having a class dependent on another class, or dependent on interface which having single method with multiple implementation, then for junit testing it becomes complicated to provide concrete class implementation as manually we need to do code for returning values with different argumnent structure as we don't know the implementation of cloud service.
+
+Thus we create fake object of service and provide its body using mockito.
+
+Also ensure junit is added in class path i.e., Right click(Project)-> Configure build path->Libraries->Add Library->Junit-.Apply.
+
+It becomes easier to create new test scenarious.
+
+2. Thus through mockito, within test method, we can provide values to it.
+
+3. First create mock for interface or classess as : 
+	GreatestInterface mock = mock(GreatestInterface.class);
+
+4. Second, whenever abstract method is called, we provide argument return value straight way, for example, if returning array then : 
+	when(mock.findGreatestNumber()).thenReturn(new int[] {42,68,100,1}); 
+
+5. Now create object of our class where interface dependency is there : 
+	GreatestOfNumbers greatestOfNumbers = new GreatestOfNumbers(mock);
+		// generate constructor using field for GreatestInterface within GreatestOfNumbers
+
+6. Finally, call method, store it in local value and check it through assert method : 
+	int number = greatestOfNumbers.greatNumber();
+	Assertions.assertEquals(100, number); 
+
+
+******************* WITH ANNOTATIONS*********************************
+
+1. First, annoate junit class with "@RunWith(MockitoJUnitRunner.class)"
+
+2. Second, create mock of interface or class and annotate it using @Mock
+	@Mock
+	GreatestInterfaceImpl mock;
+
+3. create class and inject mock i.e., dependency on it using : 
+	@InjectMocks
+	GreatestOfNumbers greatestOfNumbers;  // this class must have constructor using field for GreatestInterfaceImpl.
+
+4. Now within test method, write method return and compare as ; 
+	
+	when(mock.findGreatestNumber()).thenReturn(new int[] {42,68,100,1});
+	int number = greatestOfNumbers.greatNumber();
+	Assertions.assertEquals(100, number);

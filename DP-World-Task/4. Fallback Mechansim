@@ -1,0 +1,53 @@
+1. Add following dependency in client project : 
+		<dependency>
+			<groupId>com.netflix.archaius</groupId>
+			<artifactId>archaius-core</artifactId>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-core</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix-dashboard -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-javanica -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-javanica</artifactId>
+		</dependency>
+
+2. In main class, add below annotation : 
+	@EnableHystrix
+
+  In properties file, add
+	feign.hystrix.enabled=true
+
+3. Create one class in which fallback mechanism can be defined as below example:
+	@Component
+	public class FailServiceResponse implements FallbackFactory<OrderPayment> { // OrderPayment = Service Interface in client for 												accessing other service url
+	
+	@Override
+	public OrderPayment create(Throwable cause) {
+		
+		String httpStatus = cause instanceof FeignException ? cause.toString() : "";
+		return new OrderPayment() {
+			
+			@Override
+			public String deliveryRequest() {
+				// TODO Auto-generated method stub
+				return "Something went wrong..please try later";
+			}
+		};		
+	}
+} 
+	
+4. Now in service interface(available in Step 3 feign service connection), in abstract mewthod add one more parameter with method in which we want to show our fallback mechansim.
+	Example : 
+		@FeignClient(name = "Delivery", fallbackFactory = FailServiceResponse.class)

@@ -1,0 +1,40 @@
+		
+		Employee e1 = new Employee(11, "Pradeep", 510000,10); // id, name, salary, deptId
+		Employee e2 = new Employee(12, "Mishra", 50000,11);
+		Employee e3 = new Employee(13, "Rashmi", 450000,12);
+		Employee e4 = new Employee(14, "Mishra", 40000,11);
+		Employee e5 = new Employee(15, "Anoop", 50000,10);
+		Employee e6 = new Employee(16, "Anu", 550000,13);		
+
+		List<Employee> list = Arrays.asList(e1,e2,e3,e4,e5,e6);
+
+
+1. WAP to print Employee details working in each department using stream :
+
+		Map<Integer, List<Employee>> collect = list.stream().collect(Collectors.groupingBy(Employee::getDeptId,Collectors.toList()));
+		
+		Set<Entry<Integer,List<Employee>>> entrySet = collect.entrySet();
+
+		for(Map.Entry<Integer, List<Employee>> entry : entrySet) {
+			System.out.println(entry.getKey()+" --------> "+entry.getValue());
+		}
+
+2. WAP to print Employee count working in each department : 
+
+	Map<Integer, Long> map = list.stream().collect(Collectors.groupingBy(Employee::getDeptId, Collectors.counting()));
+
+3. WAP to print employee having maximum salary : 
+	
+	Optional<Employee> max = list.stream().max(Comparator.comparing(Employee::getSalary));
+	System.out.println(max);
+
+	// use min to get minimum salary
+
+4. WAP to get employee details with max salary in each department : 
+
+	Map<Integer, Optional<Employee>> collect2 = list.stream().
+	collect(Collectors.groupingBy(Employee::getDeptId,
+			Collectors.maxBy(Comparator.comparing(Employee::getSalary))));
+	
+
+

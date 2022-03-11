@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Header 2</h2>
+    <h3>header 3</h3>
+    <h6>Header 6</h6>
+    <p>This is paragraph</p>
+    <hr>
+
+    <!---------- generate random words auto generated(Lorem 30) -->
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore eligendi, eius itaque nobis doloremque perspiciatis incidunt fuga. Distinctio vero consectetur inventore corporis ipsa dignissimos quas et in? Ex, minus distinctio?</p>
+    
+    <!-- ************IMAGE INSERTION ********************* -->
+    <img src="photo.jpg" alt="image" height="300px" width="250px">
+    <a href="http://www.fb.com" target="_blank">Click here for facebook</a>
+
+    <!-- ******************* LIST unordered *************************** -->
+    <ul type = "circle">
+        <li>Pradeep</li>
+        <li>Mishra</li>
+    </ul>
+    <!-- ******* To check default numbering of ordered list ************** -->
+    <ol type="I">
+        <li>Pradeep</li>
+        <li>Mishra</li>
+    </ol>
+
+    <!-- ************* TABLES *************************** -->
+
+    <table align="center" border="2px"> 
+        <thead>
+             <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Class</th>
+            </tr>
+        </thead>
+    <tbody>
+        <tr>
+            <td>101</td>
+            <td>Pradeep</td>
+            <td>10th</td>
+        </tr>
+        <tr>
+            <td>102</td>
+            <td>Pradeep</td>
+            <td>10th</td>
+        </tr>
+        <tr>
+            <td>103</td>
+            <td>Pradeep</td>
+            <td>10th</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ************ FORM & ITS ELEMENTS ******************************* -->
+
+<form>
+   <label for="name">name</label>
+    <input type="text" name="name" id="name"><br>
+
+    <label for="email">Email</label>
+    <input type="email" name = "email" id="email"><br>
+
+    <input type="radio" name="gender" value="Male">Male<br>
+    <input type="radio" name="gender" value="Female">Female <br>
+
+    <label for="cars">Choose a car:</label>
+    <select name="cars" id="cars">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+    </select>
+
+    Select Hobbies : 
+    Dancing : <input type="checkbox" name="dancing" id="dancing" checked>
+    Music : <input type="checkbox" name="music" id="music">
+    Diving : <input type="checkbox" name="diving" id="diving">
+    <br> 
+
+    DOB : 
+    <input type="date" name="dob" id="dob"><br>
+    Write about yourself.. <br>
+    <textarea name="about" id="" cols="30" rows="10"></textarea>
+    <br>
+    <input type="submit" value="Submit">
+    <input type="reset" value="reset">
+</form>
+
+</body>
+</html>

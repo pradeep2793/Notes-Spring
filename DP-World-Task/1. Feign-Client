@@ -1,0 +1,37 @@
+
+1. Add below dependancy in consumer service. 		
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<version>2.2.5.RELEASE</version>
+		</dependency>
+
+2. Create Client controller along with request mapping which we want to consume : 
+
+	Ex : @GetMapping("/get")
+	     public String deliveryRequest()
+	     {
+		return "This is delivery request...";
+	     }
+
+3. In application.properties of both services, add port number along with application name.
+
+4. In consumer service, ensure spring version is "2.3.5. RELEASE" or else it will give configuration properties error.
+
+5. Now create one interface within service package where we will define our required service url using below sub steps  : 
+	i. Annotate interface with : 
+		@FeignClient(name = "Delivery", url = "http://localhost:9999/") // Delivery is application name, url = require different 											service url
+
+	ii. Now define abstract method as : 
+		@GetMapping("/getDelivery/get")
+		public String deliveryRequest(); 
+			// This is required different service url from controller..
+
+6. Now autowired Step 5 interface in consumer controller and call its abstract method within consumer request url.
+
+6. Enable feign client using below annotation in main spring class : 
+	@EnableFeignClients
+
+7. Now start both the services simulataneously and hit consumer url and required url response will get.
+	

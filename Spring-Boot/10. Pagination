@@ -1,0 +1,53 @@
+
+********** Ensure repository interface extends with jparepository not with crudrepository****************	
+
+1. Suppose our main entity class is "Employee" and repository is "EmployeeRepository" :-
+	i. In service, we fetch all the record using repository.findAll() method, but with pagination we need to pass pagerequest object as : 
+		
+		public Page<Employee> findEmpWithPagination(int offset)
+		{
+			Page<Employee> page = employeeRepository.findAll(PageRequest.of(offset, 2));
+			return page;
+		}
+
+2. Thus, it will display 2 records per page, offset represent current page number which we need to get it from controller using uri template and hyperlink in view.
+
+3. In controller,
+ 	
+	@GetMapping("/getAddEmpForm/0")
+	public String getAddEmpForm(Model model, ModelMap map) {
+
+		Page<Employee> findEmpWithPagination = crudservice.findEmpWithPagination(0);
+		
+		List<Employee> content = findEmpWithPagination.getContent();
+	
+		model.addAttribute("data", content);
+		
+		model.addAttribute("pageNo", 0);
+		
+		return "viewAllEmp";
+	}
+
+	This method is used once user click on viewEmployee first time, by default we set offset in uri as 0, so that first page will load.
+
+4. If user click on hyperlink of second button, create second method in controller as : 
+
+	@GetMapping("/getAddEmpForm/{offset}")
+	public String getAddEmpFormPagin(@PathVariable("offset") int offset, Model model, ModelMap map) {
+		
+	Page<EmployeeEntity> findEmpWithPagination = crudservice.findEmpWithPagination(offset);
+		
+	List<EmployeeEntity> content = findEmpWithPagination.getContent();
+	
+	model.addAttribute("data", content);
+		
+	model.addAttribute("pageNo", offset);
+	
+	return "viewAllEmp";
+	
+	}
+
+5. In view, add hyper link for view all employee as : 
+	 <a href="/getAddEmpForm/0">View All Employee</a>
+
+6. Now get pagination view from boostrap and modify hyper link using step 4 controller.

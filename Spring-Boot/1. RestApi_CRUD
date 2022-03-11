@@ -1,0 +1,58 @@
+
+**************************To fetch all records using Rest API's : *************************************
+
+1. Ensure controller is Annotated with @RestController 
+
+2. Create method, annotate with @GetMApping, return type List<Type> and fetch record from db : 
+
+	@GetMapping("/getEmp")
+	public List<Employee> home(Model model)
+	{
+		List<Employee> emp = (List) repo.findAll();
+		return emp;
+	}
+
+3. Open PostMan, Goto Body, select raw radio button and Json from dropdown : 
+	check url and see weather response is received or not as json
+
+
+**************************To save single record using Rest API's : *************************************
+
+	@RequestMapping("/save")
+	public List<Employee> saveEmployee(@RequestBody Employee emp)	
+	{
+		repo.save(emp);
+		List<Employee> employee = (List<Employee>) repo.findAll();
+		return employee;
+	}
+
+**************************To delete record using Rest API's : *************************************
+
+	@DeleteMapping("delete/{empId}")
+	public List<Employee> delete(@PathVariable("empId") int id)
+	{
+		repo.deleteById(id);
+		List<Employee> employee = (List<Employee>)repo.findAll();
+		return employee;
+	}
+
+**************************To update record using Rest API's : *************************************
+
+1. First fetch single record using id field and method findById(id)
+
+2. Receive Json request using @RequestBody and set value in new object. 	
+
+	@PutMapping("/update/{empId}")
+	public List<Employee> updatEmp(@RequestBody Employee emp,@PathVariable("empId") int id)
+	{
+		Employee empEntity = new Employee();
+		empEntity.setEmpName(emp.getEmpName());
+		empEntity.setEmpDept(emp.getEmpDept());
+		empEntity.setEmpId(id);
+		repo.save(empEntity);
+		
+		List<Employee> employee = (List<Employee>)repo.findAll();
+		return employee;
+	}
+
+

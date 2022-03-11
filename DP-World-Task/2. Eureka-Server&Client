@@ -1,0 +1,57 @@
+1. Create One Project as Service Registry which will act as Eureka Server in which all services will be registered using below steps : 
+	i. Add dependency : 
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	Add above below version within properites tag as : 
+	<spring-cloud.version>Hoxton.SR12</spring-cloud.version>
+
+2. "@EnableEurekaServer" - in main class.
+
+3. application.properties : 
+	eureka.client.register-with-eureka=false
+	eureka.client.fetch-registry=false
+	port & application-name (default port is 8761)
+
+4. Also add one more below depency to resolve bean error : 
+	<dependency>
+		<groupId>com.sun.jersey.contribs</groupId>
+		<artifactId>jersey-apache-client4</artifactId>
+		<version>1.19.4</version>
+	</dependency>
+
+4. Now goto url : localhost:/port(from step 3). Here Eureka site will get open where we can see all the client registered along with their 	port number and current running application.
+
+--------- Register Client with above server-------------------------------------------------------
+
+1. Add dependency same as Step 1 wherein instead of server edit it to client.
+
+2. @EnableEurekaClient in main class
+
+3. application.porperties : 
+	port
+	application-name
+	eureka.client.register-with-eureka=true
+	eureka.client.fetch-registry=true
+	eureka.client.serviceUrl.defaultZone = http://localhost:8761/eureka/
+	eureka.instance.hostname=localhost
+	eureka.instance.ip-address=true
+
+4. Now Eureka server url from above step port as : localhost:8761/
+	Here we will see all the running application along with their port name and application name.

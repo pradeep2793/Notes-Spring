@@ -1,0 +1,35 @@
+
+I. Consider the follwing scenario where 
+
+	class Human
+	{
+		@Autowired
+		private Heart;
+	}
+
+II. xml file as : 
+		<bean id = "humanHeart" class = "com.spring.practise.SpringAutoWire.Heart">
+			<property name="haemoglobin" value="2500"></property>
+		</bean>
+	
+		<bean id = "octapusHeart" class = "com.spring.practise.SpringAutoWire.Heart">
+			<property name="haemoglobin" value="4500"></property>
+		</bean>
+	
+		<bean id = "human" class = "com.spring.practise.SpringAutoWire.Human" ></bean>
+
+III. In the above example, it will resolve object using below scenario's :
+
+	a. First, will check for byType, as there are two bean defined for Heart type, it will not work
+	b. byType will fail and will look for byName, but RV is heart in Step I and there is no bean defined with heart id in xml, thus it 		   will fail as well.
+
+IV. It will give exception as : no matching bean found or expected 1 bean but found 2. To overcome this problem, we will make use of    	qualifier annotation as : 
+
+	class Human
+	{
+		@Autowired
+		@Qualifier("humanHeart")
+		private Heart;
+	}
+
+	Thus, based on qualifier, it will check in xml with bean id humanHeart and inject it.	

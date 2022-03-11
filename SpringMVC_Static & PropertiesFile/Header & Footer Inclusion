@@ -1,0 +1,9 @@
+
+1. create new folder under views as "common" and create file as "header.jspf"
+	webapp/WEB-INF/views/common/header.jspf
+		Add jquery, bootsrap and css libraries.
+
+2. Now just include it in all jsp above form tag as :  <%@include file = "common/header.jspf" %>
+
+	Include footer as welll below form tag as : <%@include file = "common/footer.jspf" %>
+	

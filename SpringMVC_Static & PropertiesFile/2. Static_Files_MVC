@@ -1,0 +1,13 @@
+
+1. In configuration file, add mapping as below and active mvc annotation as well : 
+	 <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/"  cache-period="31556926"/> 
+
+2. Create folder under src/main/webapp/WEB-INF/resources/js/myFile.js
+
+3. Now open jsp where js need to be included, go to last before body closing include jquery cdn library as : 
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script>
+
+4. Now within same jsp, include newly created js file as well - as : 
+	<script src="<c:url value="/resources/js/myFile.js" />"></script>

@@ -1,0 +1,220 @@
+
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+
+
+1. Create entity class for username & password along with getters and setters. Let it be "UserModel"
+
+2. Create UserDetailsImpl class implementing UserDetails, take one member as "UserModel" & generate getter and setter of same, rest all metod property return true.
+
+3. Create UserDetailsServiceImpl implements UserDetailsService, extract data i.e., un & pswd. In this example, we have hardcoded both values as below. We can autowire our repsository and define one abstract method to fetch data by username and then pass username & password :
+ 
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		// TODO Auto-generated method stub
+		if(username.equals("pradeep"))
+		{
+			return new User("pradeep", "mishra", new ArrayList<>());
+		}
+		else
+		{
+			throw new UsernameNotFoundException("No such id exist..");
+		}
+	
+4. Create spring security configuration class extending WebSecurityConfigurerAdapter as : 
+	@Autowired
+	UserDetailsServiceImpl userDetailsServiceImpl;
+	
+	@Autowired
+	private JwtFilter filter;
+	
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception 
+	{
+	 
+		http
+			.csrf().disable()
+				.cors().disable()
+				.authorizeRequests().antMatchers("/public/**").permitAll()
+					.anyRequest().authenticated()
+						.and()
+							.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		http
+		 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);		
+	}
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception 
+	{
+		auth.userDetailsService(userDetailsServiceImpl);
+	}
+	
+	@Bean
+	public PasswordEncoder getPasswordEncoder()  // save the password in encypted format in db instead of plain text
+	{
+		return NoOpPasswordEncoder.getInstance();  // encrypt of size 10
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager() throws Exception
+	{
+		return super.authenticationManager();
+	}
+
+5. Create JwtUtil class which is responsible for generating token as : 
+
+	private static final long serialVersionUID = -2550185165626007488L;
+	
+	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+
+    private String SECRET_KEY = "secret";
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
+
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+	
+6. Create JwtResponse class in whic token can be saved : 
+	public class JwtResponse {
+	
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	@Override
+	public String toString() {
+		return "JwtResponse [token=" + token + "]";
+	}
+
+	public JwtResponse(String token) {
+		
+		this.token = token;
+	}
+
+	public JwtResponse() {
+		
+	}
+
+6. Create JwtFilter class, responsible for verifying token before every secret request, 
+
+	@Component
+	public class JwtFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+    
+    @Autowired
+    private UserDetailsServiceImpl service;
+
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) 	throws ServletException, IOException {
+
+        String authorizationHeader = httpServletRequest.getHeader("Authorization");
+
+        String token = null;
+        String userName = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+            userName = jwtUtil.extractUsername(token);
+        }
+
+        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            UserDetails userDetails = service.loadUserByUsername(userName);
+
+            if (jwtUtil.validateToken(token, userDetails)) {
+
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+        }
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
+    }
+}
+
+	
+7. Create RestController which is exposed as public : 
+	
+	@RestController
+	@RequestMapping("/public")
+	public class RestControllerJWT {
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	UserDetailsServiceImpl userDetailsServiceImpl;
+	
+	@Autowired
+	JwtUtil jwtUtil;
+
+	private String token;
+	
+	@PostMapping("/home")
+	public ResponseEntity<?> index(@RequestBody UserModel userModel)
+	{
+		System.out.println("--------------"+userModel);
+		
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userModel.getUsername(), userModel.getPassword()));
+		
+		UserDetails byUsername = userDetailsServiceImpl.loadUserByUsername(userModel.getUsername());
+		
+		token = jwtUtil.generateToken(byUsername);
+		
+		System.out.println("--------TOKEN IS----"+token);
+		
+		return ResponseEntity.ok(new JwtResponse(token));
+		
+	}
+	
+8. Open postman, input url, pass username & password in body and then hit enter, token will be generated. Now pass this token to access secure url in postman, header tab, Authorization. Token must be start with Bearer ***token**.	

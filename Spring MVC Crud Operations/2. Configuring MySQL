@@ -1,0 +1,50 @@
+1. In config.xml we need to define bean for mysql & hibernate in following sequence : 
+	a. DriverManagerDataSource (mysql db name, id, pswd)
+	b. LocalSessionFactoryBean
+	c. HibernateTemplate
+	d. HibernateTransactionManager
+
+**************************DriverManagerDataSource********************************************
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		name="ds">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/Employee_Info" />
+		<property name="username" value="root" />
+		<property name="password" value="Welcome@123" />
+	</bean>
+
+***********************LocalSessionFactoryBean**************************************************
+
+	<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="factory">
+		<property name="dataSource" ref="ds"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.controllers.entities.EmployeeEntity</value>
+			</list>
+		</property>
+	</bean>
+**************************HibernateTemplate**********************************************************
+
+	<bean class="org.springframework.orm.hibernate5.HibernateTemplate"
+		name="hibernateTemplate">
+		<property name="sessionFactory" ref="factory"></property>
+		<property name="checkWriteOperations" value="false"></property>
+	</bean>
+*******************************HibernateTransactionManager**********************************************
+	<bean
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+		name="transactionManager">
+		<property name="sessionFactory" ref="factory"></property>
+	</bean>
+
+2. If getting error of NullPointerException in dataSource, then create one entity and give its path in <annotated class> tage of datasource bean.
+
+3. Also active transaction in spring configuration xml file using tx-annotation driven.

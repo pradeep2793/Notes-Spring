@@ -1,0 +1,17 @@
+
+5. Now to save password in encypted format in db, goto Service class, autowire BcryptPasswordEncoder and within save method : 
+	admin.setPassword(passwordEncoder.encode(admin.getPassword()));  // admin complete Admin entity object got from controller to 		service.
+
+6. In login form, ensure name field is "username" or else it will not work.  
+
+7. Now to display name of logged in username in every page after login, goto handler of defaultSuccessUrl("/admin/empHome") defined in securityconfiguration file in controller, in parameter take Authentication authentication and use getName() method as : 
+
+	@GetMapping("/empHome")
+	public String loginSuccessHome(ModelMap map, Authentication authentication)
+	{
+		String name = authentication.getName();
+		map.put("name", name);
+		return "adminHome";
+	}
+
+8. Use name field in any controller or any handler using @SessionAttribute.

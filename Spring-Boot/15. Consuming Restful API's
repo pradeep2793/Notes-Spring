@@ -1,0 +1,48 @@
+
+Following are the points to note : 
+
+*** RestTemplate***
+	
+	Rest Template is class which is used to create applications that consume RESTful Web Services. You can use the exchange() method to 	 consume the web services for all HTTP methods. 
+
+	The exchange method executes the request of any HTTP method and returns ResponseEntity instance. 
+	
+	The exchange method can be used for HTTP DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE methods.
+
+	We need to pass 4 parameter along with exchange method as : url, method_type, request, response class.
+
+***HttpHeaders***
+
+	If in postman, whenever we need to pass credential like username, pswd, api key, we pass in authorization tab.
+	
+	Thus in java we need to create object of HTTPHeaders and need to pass such credentials.
+
+****STEPS TO CREATE AND INTERACT PUBLIC API WITH JAVA PROJECT*******************
+
+1. First check in postman weather url is working properly or not, here we will be having 2 attributes request and response.
+	Request - url, method type, what we are passing in body, what credential passing in authorization.
+	Response - what response is generated
+
+2. In java, create two pojo class one for request and one for response: 
+	Request class: keep member of what we are passing in step 1 request except url field. Generate getter & setters.
+	Response class : keep member of field of what response is generated along with getter and setter.
+
+3. Now in controller or main class : 
+	
+	RestTemplate restTemplate = new RestTemplate();
+	HttpHeaders header = new HttpHeaders();
+	header.setContentType(MediaType.APPLICATION_JSON);
+	header.setBearerAuth("api-key");
+
+	// create request object as "pojo" and pass parameter using setter attribute
+
+	HttpEntity<Request-Entity> request = new HttpEntity<Request-Entity>(pojo,header);
+
+	ResponseEntity<Response-Entity> response = restTemplate.exchange(url, HttpMethod.POST, request, Response-Entity.class);
+
+	if (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED) // for post
+		{
+			System.out.println("--------------------"+response.getBody().getLink());
+		}
+
+	

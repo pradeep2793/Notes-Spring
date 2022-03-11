@@ -1,0 +1,31 @@
+1. Ensure docker is installed, up and running fine.
+
+2. In spring boot project, in pom.xml file, give dokcer name within <build> tag as 
+	<finalName>spring-boot-docker</finalName> // name of docker which we will be givinf in docker file as well.
+
+3. Right click on project, create new file, name it as "Dockerfile", name is important, dont give another name and dont give any extension.
+
+4. Now within Dockerfile, define 4 instruction as : 
+	FROM openjdk:8  // java version will be downloaded if not available within docker container
+	EXPOSE 8080     // must be same, check in propertied file if define any
+	ADD target/spring-boot-docker.jar spring-boot-docker.jar  // name from pom.xml file
+	ENTRYPOINT ["java" ,"-jar" ,"/spring-boot-docker.jar" ]  // url from pom.xml file.
+
+5. Right click on project, Run as-> Maven install.
+
+6. Open terminal, goto specific project path within terminal either through command or goto folder, right clcik, open terminal here.
+
+7. Build our docker image using below command.
+	docker build -t spring-boot-docker.jar .
+
+8. Once build, check weather image added to repository or not using bewlow command
+	docker image ls
+
+9. Now run our image using below command..
+	docker run -p 9090:8080 spring-boot-docker.jar
+		//9090=docker port, 8080 our application port.
+
+10. Now hit rest endpoint using port 9090(docker port)..
+
+Note : If getting permission denied error while executing any docker command, then prefix all command with sudo docker...
+

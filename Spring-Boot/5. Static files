@@ -1,0 +1,28 @@
+
+1. Add dependencies of webjars in pom.xml for js and bootstrap : 
+	<dependency>
+		<groupId>org.webjars</groupId>
+		<artifactId>bootstrap</artifactId>
+		<version>3.3.6</version>
+	</dependency>
+		
+	<dependency>
+		<groupId>org.webjars</groupId>
+		<artifactId>jquery</artifactId>
+		<version>1.9.1</version>
+	</dependency>
+
+2. Now in jsp, add libraries for both just before body close tag:
+	<script src="webjars/jquery/1.9.1/jquery.min.js"></script> // for jquery
+	<script src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>  // for bootsrap
+
+	<script src="js/my.js"></script> // actual js file for jquery to load.
+
+3. Also add css stylesheet just before head close tag as : 
+	<link href = "webjars/bootstrap/3.3.6/css/bootstrap.min.css" rel = "stylesheet">
+
+4. Now create ".js" & ".css" file under folder resources/static/js/*.js or resources/static/css/*.css.
+
+6. Include .css file in jsp before head close tag as : 
+	<link href="/css/employee.css" rel="stylesheet">
+

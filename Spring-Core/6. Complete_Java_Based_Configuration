@@ -1,0 +1,19 @@
+
+I) Delete the xml config file.
+
+II) create new java class wherein configuration is to be done, mark the class as @Configuration and @ComponentScan(basePackages="")
+	Example : 
+		@Configuration
+		@ComponentScan(basePackages = "com.spring.practise")
+		public class LivingThingConfig {
+
+			// fetch the value of data member using @Value from properties file.		
+
+		}
+
+III) Later on mark classes @Component whose object or bean need to be created and @Autowired of whose object or bean need to be injected.
+
+IV) In app.java
+	 ApplicationContext ctx =  new AnnotationConfigApplicationContext(LivingThingConfig.class);
+
+V) Done.....!! 

@@ -1,0 +1,53 @@
+
+********************* COMPARABLE *******************************
+
+1. This interface is found in java.lang package and contains only one method named compareTo(Object).
+
+2. Java Comparable interface is used to order the objects of the user-defined class. 
+
+3. It provides a single sorting sequence only, i.e., you can sort the elements on the basis of single data member only. For example, it may be 	  rollno, name, age or anything else.
+
+4. public int compareTo(Object obj): It is used to compare the current object with the specified object. It returns
+
+	positive integer, if the current object is greater than the specified object.
+	negative integer, if the current object is less than the specified object.
+	zero, if the current object is equal to the specified object.
+
+5. We can sort the elements of:
+
+	String objects
+	Wrapper class objects
+	User-defined class objects
+
+6. Collection class is used to sort the object of List as for Set & Map we can use TreeSet but for List, there is no such predefined algorithm 	  or class to sort.
+
+7. Example to sort user defined object : 
+
+	class Employee implements Comparable<Employee>
+	{
+		private int id;
+		private STring name;
+		private int salary;
+
+		// getters & setters
+
+		@Override 
+		public int compareTo(Employee e) { 
+	 	return this.salary-e.getSalary(); // sort based on salary i.e., on int
+			or
+	 	return this.name.compareTo(e.getName()); // sort based on name i.e., string 
+		}
+	}
+		
+	Thus, in order to do sorting of wrapper class, will use - operator whereas for String object, will use compareTo() method.
+
+	class Example
+	{
+		main()
+		{
+			//create employee object and add values in employee object;
+			// create list object and add employee values in it.
+			Collections.sort(list);		// it will sort list based on compareTo() method.
+			sysout(list);
+		}	
+	}

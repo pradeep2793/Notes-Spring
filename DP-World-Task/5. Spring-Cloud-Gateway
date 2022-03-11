@@ -1,0 +1,28 @@
+1. Create new spring starter project- add dependency at stratup for : gateway and eureka.
+
+2. Enable @EnableEurekaClient in main class.
+
+3. Open application.properties, 
+	1st : give its port number and application name.
+	2nd : register it wiht eureka as client.
+		Example : 
+			spring.application.name=Gateway
+			server.port=9898
+
+			eureka.client.register-with-eureka=true
+			eureka.client.fetch-registry=true
+
+4. Now register services within properties file as : 
+
+	spring.cloud.gateway.routes[0].id = Order
+	spring.cloud.gateway.routes[0].uri=lb://Order/
+	spring.cloud.gateway.routes[0].predicates[0]=Path=/order/**
+
+	To register 2nd services : 
+
+	spring.cloud.gateway.routes[1].id = Delivery
+	spring.cloud.gateway.routes[1].uri=lb://delivery/
+	spring.cloud.gateway.routes[1].predicates[0]=Path=/getDelivery/**
+
+Thus, we can add n number of services by just passing parameter as 1,2,3....so on.
+	

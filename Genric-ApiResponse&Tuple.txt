@@ -1,0 +1,110 @@
+1. If we need to write logic in service itself and return some success, error response from service itself instead of writing it in controller, then we will create Tuple2 class and return all messages from service and show in controller through piResponse class.
+
+2. Ensure ApiResponse class is there.
+
+3. Create Tuple2 class with generic key & value as :
+	public class Tuple2<K,V> {
+	private K first;
+	private V second;
+	// no-args const, all-args const, getter & setter.
+
+4. In service,  method return type must be Tuple2<Integer, Object>
+
+	public Tuple2<Integer, Object> saveOrUpdateJob(JoRequest jobOrderReq, boolean isUpdate) throws Exception {
+		JobOrderDB jobOrderDb = new JobOrderDB();
+
+		ImportExportEnum impExpType = getImportExportType(jobOrderReq.getJobType());
+		if (null == impExpType) {
+			LOGGER.info("NOT ITENDIFY JOB IS IMPORT/EXPORT/EMPTY, JobRef : {}", jobOrderReq.getJobRef());
+			return new Tuple2<Integer, Object>(JobResponse.DATA_VALIDATION_CODE,
+					"NOT ITENDIFY JOB IS IMPORT OR EXPORT"); // JobResponse.DATA_VALIDATION_CODE is enum with integer value i.e., status code
+		}
+		BoundTypeEnum boundType = getBoundType(jobOrderReq);
+		if (boundType == BoundTypeEnum.NOT_APPLICABLE) {
+			LOGGER.info("NOT ITENDIFY JOB BOUND TYPE IS INBOUND OR OUTBOUND, JobRef : {} " + jobOrderReq.getBoundType(),
+					jobOrderReq.getJobRef());
+			return new Tuple2<Integer, Object>(JobResponse.DATA_VALIDATION_CODE,
+					"NOT ITENDIFY JOB BOUND TYPE IS INBOUND OR OUTBOUND : " + jobOrderReq.getBoundType());
+
+		}
+		List<String> validationErrorList = dataValidation(jobOrderReq, impExpType);
+		if (!validationErrorList.isEmpty()) {
+			return new Tuple2<Integer, Object>(JobResponse.MISSING_MANDATORY_FIELD, "MISSING MANDATORY FIELD");
+		}
+		FacilityMaster facility = facilityService.findByFacilityCode(jobOrderReq.getTerminalID());
+
+		if (null == facility) {
+			LOGGER.info("TERMINAL CODE IS MIS MATCH, TERMINAL ID : {}", jobOrderReq.getTerminalID());
+			return new Tuple2<Integer, Object>(JobResponse.DATA_VALIDATION_CODE,
+					"TERMINAL CODE IS MIS MATCH OR NOT FOUND" + jobOrderReq.getTerminalID());
+		}
+		ELogiTransporter eLogiTransporter = whTransporterService
+				.getETransporterByNameAndFacility(jobOrderReq.getVendorID(), facility.getId());
+		if (null == eLogiTransporter) {
+			LOGGER.info("VENDOR CODE IS MIS MATCH, JobRef : {}", jobOrderReq.getJobRef());
+			return new Tuple2<Integer, Object>(JobResponse.DATA_VALIDATION_CODE,
+					"VENDOR CODE IS MIS MATCH OR NOT FOUND" + jobOrderReq.getVendorID());
+		}
+
+		if (!isUpdate) {
+			JobOrderDB jobRef = jobOrderRepository.findByJobRef(jobOrderReq.getJobRef());
+			if (jobRef != null) {
+				return new Tuple2<Integer, Object>(JobResponse.DB_UNIQUE_KEY_ERROR,
+						"RECORD IS ALREADY AVAILABLE IN DB WITH JOB_REF -" + jobOrderReq.getJobRef());
+
+			}
+			BeanUtils.copyProperties(jobOrderReq, jobOrderDb, "id", "boundType", "facilityId", "vendorID",
+					"importExport");
+			jobOrderDb.setCreatedOn(new Date());
+			jobOrderDb.setCreatedBy(auth.getName());
+		} else {
+			jobOrderDb = jobOrderRepository.findById(jobOrderReq.getId());
+			if (jobOrderDb == null) {
+				return new Tuple2<Integer, Object>(JobResponse.NO_RECORD_FOUND_IN_DB,
+						"TRANSACTION MODE IS UPDATE AND JOB ID : " + jobOrderReq.getId() + " IS NOT FOUND IN DB");
+			}
+			BeanUtils.copyProperties(jobOrderReq, jobOrderDb, "facilityId", "vendorID", "importExport");
+		}
+		jobOrderDb.setBoundType(boundType);
+		jobOrderDb.setUpdatedOn(new Date());
+		jobOrderDb.setIsActive(1);
+		jobOrderDb.setIsYmsCreated(1);
+		jobOrderDb.setFacilityId(facility);
+		jobOrderDb.setVendorID(eLogiTransporter);
+		jobOrderDb.setImportExport(impExpType);
+		jobOrderDb.setUpdatedBy(auth.getName());
+
+		try {
+			jobOrderRepository.save(jobOrderDb);
+			return new Tuple2<Integer, Object>(JobResponse.SUCCESS_CODE, generateResponse(jobOrderDb));
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.info("Error in storing data into database", e);
+			return new Tuple2<Integer, Object>(JobResponse.DB_UNIQUE_KEY_ERROR, "SOME ERROR OCCURED IN STORING DATA");
+		}
+	}
+
+
+5. In controller, 
+
+	@PostMapping("/save")
+	@PreAuthorize("hasAuthority('INBOUND_ADD')")
+	public ApiResponse<Object> saveContainerJob(@RequestBody JoRequest jobOrder) {
+		boolean isUpdate = false;
+		JobResponse jobResponse = null;
+		Tuple2<Integer,Object> tuple2 = new Tuple2<>();
+
+		try {
+			tuple2 = containerJobNewService.saveOrUpdateJob(jobOrder, isUpdate);
+			LOGGER.info("Container with Job Order inserted successfully :: {}", jobResponse);
+			if(tuple2.getFirst()==200) {
+				return new ApiResponse<>(true, HttpStatus.OK.name(), MasterDataAppConstants.JOB_DETAILS_ADD_SUCCESS, tuple2.getSecond());
+			}
+			else
+				return new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.name(), String.valueOf(tuple2.getSecond()));
+
+		} catch (DataIntegrityViolationException e) {
+			return new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.name(), String.valueOf(tuple2.getSecond()));
+		} catch (Exception e) {
+			return new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.name(), String.valueOf(tuple2.getSecond()));
+		}
+	}

@@ -1,0 +1,56 @@
+1. Suppose we are dealing with 2 entity i.e., Employee and Department & both we want to store in different databases then, In application.properties file, kindly define datasource related configuration as : 
+
+	server.port=9192
+	spring.employee.datasource.jdbcUrl=jdbc:mysql://localhost:3306/User
+	spring.employee.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+	spring.employee.datasource.username=root
+	spring.employee.datasource.password=Welcome@123
+
+	spring.jpa.show-sql=true
+
+	spring.department.datasource.jdbcUrl=jdbc:mysql://localhost:3306/Department
+	spring.department.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+	spring.department.datasource.username=root
+	spring.department.datasource.password=Welcome@123
+
+2. Now define 2 configuration for the database to ensure and tells spring boot to resolve required one at run time.
+
+	DepartmentConfig.java
+
+	@Configuration
+	@EnableTransactionManagement
+	@EnableJpaRepositories(entityManagerFactoryRef = "departmentEntityManagerFactory", basePackages = {
+	"com.organisation.departmentRepositories" }, transactionManagerRef = "departmentTransactionManager")
+	public class DepartmentConfig {
+	
+
+	@Bean(name = "departmentDataSource")
+	@ConfigurationProperties(prefix = "spring.department.datasource")
+	public DataSource dataSource() {
+		return DataSourceBuilder.create().build();
+	}
+
+
+	@Bean(name = "departmentEntityManagerFactory")
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
+			@Qualifier("departmentDataSource") DataSource dataSource) {
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put("hibernate.hbm2ddl.auto", "update");
+		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+		return builder.dataSource(dataSource).properties(properties)
+				.packages("com.organisation.departmentEntity").persistenceUnit("Department").build();
+	}
+
+
+	@Bean(name = "departmentTransactionManager")
+	public PlatformTransactionManager transactionManager(
+			@Qualifier("departmentEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+		return new JpaTransactionManager(entityManagerFactory);
+	}
+
+	}
+
+Similarly, do the same for EmployeeConfig.java by doing modification above java file.
+
+
+3. Thats it, define 2 repository and then use that repository to save and retrieve from db.

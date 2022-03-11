@@ -1,0 +1,32 @@
+
+1. Create Maven project, archtype will be web app. Once project created, error will be there, add Runtime library as Tomcat in build path.
+
+2. Open pom.xml, add dependancy of : spring webmvc, spring core, spring orm, hibernate core, mysql connector, jstl, spring tx
+
+3. Open web.xml, add dispatcher servlet
+	<servlet>
+		<servlet-name>employee</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>employee</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+4. create "employee-servlet.xml" file under webapp/web-inf. Copy namespace from some other beans. declare view resolver bean as : 
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		name="viewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+5. create view under web-inf/views/ folder.
+
+6. Create controller, annotate with controller and handler method.
+
+7. in spring config file, either declare controller bean or scan package using <component-scan base packages>. Also active annotation using : 	                	<context:annotation-config/>
+
+8. Run file.
+
+

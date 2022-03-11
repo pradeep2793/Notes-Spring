@@ -1,0 +1,35 @@
+JDK contains Compiler+JRE and JRE contains API+JVM & JVM contains Interpreter+JIT.
+
+			JDK
+			 |
+	-----------------------------------------
+	|					|
+     Compiler & Development tools	       JRE
+						|
+					------------------
+					|		  |
+		     		       API		 JVM
+							  |
+						  ------------------
+						  |		   |
+						Interpreter	  JIT
+
+
+JDK : 
+	1. JDK stands for Java Development Kit.
+	2. JDK provide development tools(programs/softwares) and execution/runtime environment.
+	3. JDK is used for developing new application and modiffying existing applications.
+	4. With the help of JDK, application gets compiled and converted to bytecode which is used on client machine to run.
+	5. So, JDK contains development tool compiler and runtime environment JVM.
+
+JRE :
+	1. JRE stands for Java Runtime Environment.
+	2. It provide only Runtime environment not development tools.
+	3. Using JRE, we can only execute already developed application and cannot run or developed new application and cannot modify existing application.
+	4. JRE is platform dependent.
+
+JVM : 
+	1. JVM stands for Java Virtual Machine.
+	2. It contains Interpreter+JIT, responsible to load and run java bytecode by converting bytecode into current OS machine language.
+	3. Interpreter is used for executing line by line execution
+	4. JIT stands for Just in Time compiler, it increases the performance of conversion of bytecode into current os language. 

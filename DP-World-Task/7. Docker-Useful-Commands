@@ -1,0 +1,40 @@
+1. curl -fsSL https://get.docker.com -o get-docker.sh
+	to download docker, it will download script in home folder which will contain all docker installation related stuffs
+
+2. docker build -t spring-boot-docker.jar .
+	build image within docker container
+
+3. docker -v
+	version of installed docker
+
+4. docker image ls
+   docker images
+	list all docker images available
+
+
+5. sudo sh get-docker.sh
+	it will install docker
+
+6.  docker run -p 9090:8080 spring-boot-docker.jar
+	to run our docker image (spring-boot-docker = name of our actual jar)
+	9090 = docker container port, need to hit this port
+
+7. to remove image from container
+   - Fisrt get image id using command from step 2 an then run
+		docker rmi <image id> or
+		docker rmi -f <image id> (it is force delete)
+   - remove multiple images : 
+		docker rmi <your-image-id> <your-image-id> ...
+   - remove all images from container
+		docker rmi $(docker images -q)
+		(there are two command the first which execute in the $() is shell syntax and returns the results whatever executed in that 			syntax. So in this -q- is a option is used to provide to return the unique IDs,$() returns the results of image IDs and then 			docker rmi removes all those images.)
+
+8. docker ps -a  
+	it will display all running container
+  docker ps -l  
+	it will display latest running container or last run conatiner.
+
+
+
+	
+	

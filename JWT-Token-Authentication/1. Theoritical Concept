@@ -1,0 +1,23 @@
+
+JWT - JSON WEB BASED TOKEN ******************************
+
+1. In traditional api's, everytime client send a request, he need to send username & password along with request to access rest api. Thus for n number of request, n times username & password need to be send.
+
+2. To avoid this, jwt based authentication was introduced in which, when client send request or need to login with id & password, in return encrypted text is retturned which is known as Json token. 
+
+3. Thus client need to pass this token instead of id & password every time to access restricted api's
+
+4. JSON is stateless which means server does not keep any of the data of client. It is useful when we have multiple microservices in the application running on multiple hybrid servers. As session is specific to single server serving the request, it is not useful in microservices.
+
+5. It reduces network round trip time.
+
+6. Sample json token format : 
+	Ex : eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcmFkZWVwIiwiZXhwIjoxNjMyMjY.KMjDDq-5fYBJvK4ebzlCOgnMCM8ACAU
+
+ Thus it consist of 3 part seperated by "."
+
+1st part : It consist of Header in which type of algorithm (HS256 is default) and type of token(JWT) is there.
+2nd part : It consist of Payload in which 3 things are there : subject, name & expire date
+3rd part : It gives verified signature i.e., token-based on username & password & base encode HS256 encoder.
+
+After combining all 3 part, token is generated.	
